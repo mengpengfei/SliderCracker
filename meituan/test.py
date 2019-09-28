@@ -12,29 +12,25 @@ import time
 from bs4 import BeautifulSoup
 from meituan.geetest import crack
 
-headers = {
-    'Accept': '*/*',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Accept-Language': 'zh-CN,zh;q=0.9',
-    'Connection': 'keep-alive',
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    'Cookie': '__mta=187022615.1564213998822.1569568175960.1569574587654.43; _lxsdk_cuid=16c326b5ddec8-0b4a4921c317cb-37c153e-100200-16c326b5ddec8; uuid=ea8b149299ce4622b486.1568812285.1.0.0; SERV=www; LREF=aHR0cHM6Ly93d3cubWVpdHVhbi5jb20vYWNjb3VudC9zZXR0b2tlbj9jb250aW51ZT1odHRwcyUzQSUyRiUyRnd3dy5tZWl0dWFuLmNvbSUyRg%3D%3D; mtcdn=K; _lx_utm=utm_source%3Dso.com%26utm_medium%3Dorganic; passport.sid=ygl4KVoY6psrtpp65UWIxALs4HJc6Kmx; passport.sid.sig=J63y9teUkt1vtBfBVgVP-O7xOPQ',
-    'Referer': 'https://passport.meituan.com/account/unitivesignup?service=www&continue=https%3A%2F%2Fwww.meituan.com%2Faccount%2Fsettoken%3Fcontinue%3Dhttps%253A%252F%252Fwww.meituan.com%252F',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.80 Safari/537.36',
-    'X-Client': 'javascript',
-    # 'X-CSRF-Token': 'CgrjJCqV-xzeXxWMteylLgtoDMuzG9qmPmEo',
-    'X-Requested-With': 'XMLHttpRequest'
-}
+
+def set_session():
+    session = requests.session()
+    session.headers = {
+        'Referer': 'https://passport.meituan.com/account/unitivesignup?service=www&continue=https%3A%2F%2Fwww.meituan.com%2Faccount%2Fsettoken%3Fcontinue%3Dhttps%253A%252F%252Fwww.meituan.com%252F',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.80 Safari/537.36',
+    }
+    return session
 
 
-def _get_csrf():
+def _get_csrf(session):
     """
     获取认证Csrf参数
+    :param session:
     :return:
     """
     url = 'https://passport.meituan.com/account/unitivelogin?service=www&continue=https%3A%2F%2Fwww.meituan.com%2Faccount%2Fsettoken%3Fcontinue%3Dhttp%253A%252F%252Fcd.meituan.com%252F'
 
-    resp = requests.get(url, headers=headers)
+    resp = session.get(url)
     soup = BeautifulSoup(resp.text, 'lxml')
     csrf = soup.select('input[name="csrf"]')[0]['value']
 
@@ -78,15 +74,16 @@ def test():
     # username = get_phone()
     pwd = _encrypt_pwd('123456')
 
-    csrf = _get_csrf()
-    headers.update({
+    session = set_session()
+    csrf = _get_csrf(session)
+    session.headers.update({
         'Referer': 'https://passport.meituan.com/account/unitivelogin?service=www&continue=https%3A%2F%2Fwww.meituan.com%2Faccount%2Fsettoken%3Fcontinue%3Dhttp%253A%252F%252Fcd.meituan.com%252F',
         'X-CSRF-Token': csrf,
         'X-Client': 'javascript',
         'X-Requested-With': 'XMLHttpRequest',
     })
-    if 'Authorization' in set(headers):
-        del headers['Authorization']
+    if 'Authorization' in set(session.headers.keys()):
+        del session.headers['Authorization']
     data = {
         'countrycode': '86',
         'email': '18829040039',
@@ -97,7 +94,7 @@ def test():
         'responseCode': '',
         'h5Fingerprint': ''
     }
-    resp = requests.post(login_api, data=data, headers=headers).json()
+    resp = session.post(login_api, data=data).json()
     print(resp)
     if resp['error']['code'] == 101190:
         request_code = resp['error']['data']['requestCode']
