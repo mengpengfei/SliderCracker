@@ -92,14 +92,14 @@ def crack(request_code):
     if response_code:
         return {
             'success': 1,
-            'message': '验证成功! ',
+            'message': '校验成功! ',
             'data': {
                 'response_code': response_code
             }
         }
     return {
         'success': 0,
-        'message': '验证失败! ',
+        'message': '校验失败! ',
         'data': None
     }
 
