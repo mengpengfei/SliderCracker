@@ -10,13 +10,13 @@
 --------
 
 * 极验2
-![image](https://github.com/Esbiya/Qunar/blob/master/view/1.png)
+![image](https://github.com/Esbiya/SliderCracker/blob/master/view/geetest2.png)
 
 * 美团
-![image](https://github.com/Esbiya/Qunar/blob/master/view/3.png)
+![image](https://github.com/Esbiya/SliderCracker/blob/master/view/meitaun.png)
 
 * 云片
-![image](https://github.com/Esbiya/Qunar/blob/master/view/4.png)
+![image](https://github.com/Esbiya/SliderCracker/blob/master/view/yunpian.png)
 
 公告
 --------
