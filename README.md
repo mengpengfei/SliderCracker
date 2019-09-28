@@ -13,7 +13,7 @@
 ![image](https://github.com/Esbiya/SliderCracker/blob/master/view/geetest2.png)
 
 * 美团
-![image](https://github.com/Esbiya/SliderCracker/blob/master/view/meitaun.png)
+![image](https://github.com/Esbiya/SliderCracker/blob/master/view/meituan.png)
 
 * 云片
 ![image](https://github.com/Esbiya/SliderCracker/blob/master/view/yunpian.png)
