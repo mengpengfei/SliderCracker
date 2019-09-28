@@ -10,13 +10,10 @@ import requests
 import json
 import base64
 import io
-import os
 import execjs
 import re
 import time
 import cv2
-from bs4 import BeautifulSoup
-from hashlib import md5
 from PIL import Image
 import random
 import numpy as np
