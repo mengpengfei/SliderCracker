@@ -29,7 +29,6 @@ def pic_download(url, type):
 
 
 def get_distance(small_url, big_url):
-
     # 引用上面的图片下载
     pic_download(small_url, 'slider')
 
@@ -67,51 +66,69 @@ def get_distance(small_url, big_url):
     return y
 
 
-class JDSlide:
+class JDCracker:
     def __init__(self, eid):
-        self.__eid = eid
-
-    def slide(self):
-        session = requests.Session()
-        session.headers = {
+        self.eid = eid
+        self.session = requests.Session()
+        self.session.headers = {
             'Connection': 'keep-alive',
             'Referer': 'https://passport.jd.com/new/login.aspx?ReturnUrl=https%3A%2F%2Fh5.m.jd.com%2Fpc%2Fdev%2F3mr2iWXgiWcZvyGYrQAoYp3KXAaq%2Findex.html%3Futm_source%3Dkong%26utm_medium%3Dzssc%26utm_campaign%3Dt_1000023384_100757%26utm_term%3D36f20e86-5b4d-4b6e-8fba-d79e6c2654a9-p_1999-pr_1646-at_100757%26jd_pop%3D36f20e86-5b4d-4b6e-8fba-d79e6c2654a9%26abt%3D0',
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                          "Chrome/69.0.3497.81 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36"
         }
-        # 获取滑动
-        response = session.get(
+
+    def _init_slider(self):
+        """
+        初始化滑块
+        :return:
+        """
+        response = self.session.get(
             "https://iv.jd.com/slide/g.html?appId=1604ebb2287&scene=login&"
-            "product=click-bind-suspend&e=%s&callback=jsonp_0682216393529359" % self.__eid
+            "product=click-bind-suspend&e=%s&callback=jsonp_0682216393529359" % self.eid
         )
         init_data = json.loads(response.text.replace("jsonp_0682216393529359(", "").replace(")", ""))
-        # print("初始化数据", init_data)
+        return init_data
+
+    @staticmethod
+    def _encrypt_trace(distance):
+        """
+        加密轨迹, 生成参数 d
+        :return:
+        """
+        with open('jd_slider.js', 'r') as f:
+            js = f.read()
+
+        ctx = execjs.compile(js)
+        return ctx.call('getParam', distance)
+
+    def get_session_id(self):
+        """
+        获取 _jdtdmap_sessionId
+        :return:
+        """
+        response = self.session.get(
+            "https://seq.jd.com/jseqf.html?bizId=passport_jd_com_login_pc&platform=js&version=1"
+        )
+        _jdtdmap_sessionId = re.findall(r'_jdtdmap_sessionId="(.*?)"', response.text)[0]
+        return _jdtdmap_sessionId
+
+    def crack(self):
+        init_data = self._init_slider()
 
         bg = init_data['bg']
         small = init_data['patch']
         distance = int(get_distance(small, bg) * (278 / 360))
-        print("缺口坐标", distance)
 
         if not distance:
             print("缺口定位失败")
             return
 
-        # 获取 _jdtdmap_sessionId
-        response = session.get(
-            "https://seq.jd.com/jseqf.html?bizId=passport_jd_com_login_pc&platform=js&version=1"
-        )
-        _jdtdmap_sessionId = re.findall(r'_jdtdmap_sessionId="(.*?)"', response.text)[0]
-        print("_jdtdmap_sessionId", _jdtdmap_sessionId)
+        _jdtdmap_sessionId = self.get_session_id()
 
-        time.sleep(1)  # 非常关键
+        time.sleep(random.random())  # 非常关键
 
-        with open('jd_slider.js', 'r') as f:
-            js = f.read()
+        d = self._encrypt_trace(distance)
 
-        ctx = execjs.compile(js)
-        d = ctx.call('getParam', distance)
-
-        # 最终请求
+        url = "https://iv.jd.com/slide/s.html?"
         params = {
             "d": d,
             "c": init_data["challenge"],
@@ -119,28 +136,29 @@ class JDSlide:
             "appId": "1604ebb2287",
             "scene": "login",
             "product": "click-bind-suspend",
-            "e": self.__eid,
+            "e": self.eid,
             "s": _jdtdmap_sessionId,
             "o": 'xxx',
             "lang": 'zh_CN',
             "callback": "jsonp_042151781690389"
         }
-        response = session.get(
-            "https://iv.jd.com/slide/s.html?",
-            params=params
-        )
-
-        answer_data = json.loads(response.text.replace("jsonp_042151781690389(", "").replace(")", ""))
-        if "validate" not in answer_data.keys():
-            print(answer_data)
-            print("识别失败", answer_data["message"])
-            return
-        answer = {
-            "validate": answer_data["validate"],
-            "challenge": init_data["challenge"],
+        response = self.session.get(url, params=params)
+        result = json.loads(response.text.replace("jsonp_042151781690389(", "").replace(")", ""))
+        print(result)
+        if "validate" not in result.keys():
+            return {
+                'success': 0,
+                'message': '校验失败: {}'.format(result["message"]),
+                'data': None
+            }
+        return {
+            'success': 1,
+            'message': '校验成功! ',
+            'data': {
+                "validate": result["validate"],
+                "challenge": init_data["challenge"],
+            }
         }
-        print("结果", answer)
-        return answer
 
 
 if __name__ == '__main__':

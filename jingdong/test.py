@@ -6,7 +6,7 @@
 # @Software: PyCharm
 
 import requests
-from jingdong.geetest import JDSlide
+from jingdong.geetest import JDCracker
 from bs4 import BeautifulSoup
 
 
@@ -18,8 +18,8 @@ def main():
         })
     soup = BeautifulSoup(resp.text, 'lxml')
     eid = soup.select('#eid')[0]['value']
-    spider = JDSlide(eid)
-    spider.slide()
+    result = JDCracker(eid).crack()
+    print(result)
 
 
 if __name__ == '__main__':

@@ -213,7 +213,6 @@ def crack():
     while True:
         init_data = _init_slider(ctx)
         if init_data:
-            print('滑块初始化加载成功! ')
             break
         time.sleep(random.random())
     distance = _get_distance(init_data['slider_url'], init_data['captcha_url'])
