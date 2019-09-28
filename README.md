@@ -12,6 +12,9 @@
 * 极验2
 ![image](https://github.com/Esbiya/SliderCracker/blob/master/view/geetest2.png)
 
+* 安居客
+![image](https://github.com/Esbiya/SliderCracker/blob/master/view/anjuke.png)
+
 * 美团
 ![image](https://github.com/Esbiya/SliderCracker/blob/master/view/meituan.png)
 
