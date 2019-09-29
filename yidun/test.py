@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/9/28 11:56
+# @Time    : 2019/9/29 18:50
 # @Author  : Esbiya
 # @Email   : 18829040039@163.com
 # @File    : test.py
 # @Software: PyCharm
 
 import time
-from yunpian.geetest import crack
+from yidun.geetest import crack
 
 
 def main():
