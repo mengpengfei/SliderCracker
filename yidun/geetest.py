@@ -24,6 +24,10 @@ headers = {
 
 
 def _reload_js():
+    """
+    加载 js
+    :return:
+    """
     with open('yd_slider.js', 'rb') as f:
         slider_js = f.read().decode()
     with open('generate_fp.js', 'rb') as f:
@@ -139,6 +143,12 @@ def _get_distance(slider_url, captcha_url):
 
 
 def _init_slider(slider_js, fp):
+    """
+    滑块初始化
+    :param slider_js:
+    :param fp:
+    :return:
+    """
     url = 'https://c.dun.163yun.com/api/v2/get?'
     params = {
         'id': 'cff8becfc6914bf6a81d255f67a626b9',
@@ -176,6 +186,14 @@ def _init_slider(slider_js, fp):
 
 
 def _slider_verify(slider_js, token, distance, fp):
+    """
+    验证
+    :param slider_js:
+    :param token:
+    :param distance:
+    :param fp:
+    :return:
+    """
     data = _encrypt_data(slider_js, token, distance)
     params = {
         'id': 'cff8becfc6914bf6a81d255f67a626b9',
