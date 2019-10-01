@@ -5,6 +5,8 @@
 # @File    : test.py
 # @Software: PyCharm
 
+import random
+import time
 import requests
 from jingdong.geetest import JDCracker
 from bs4 import BeautifulSoup
@@ -19,8 +21,18 @@ def main():
     soup = BeautifulSoup(resp.text, 'lxml')
     eid = soup.select('#eid')[0]['value']
     result = JDCracker(eid).crack()
-    print(result)
+    return result
 
 
 if __name__ == '__main__':
-    main()
+    print('开始测试...')
+    print('=' * 100)
+    num = 1
+    success = 0
+    while num <= 20:
+        x = main()
+        print(x)
+        if x['success']:
+            success += 1
+        time.sleep(random.random())
+    print('最后测试结果 >> %.2f%%' % success)

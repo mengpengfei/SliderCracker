@@ -7,6 +7,7 @@
 
 
 import os
+import random
 import numpy as np
 import requests
 import execjs
@@ -55,15 +56,79 @@ def _get_fp(js):
     return ctx_.call('generateFingerprint')
 
 
-def _encrypt_data(js, token, distance):
+def _encrypt_data(js, token, trace):
     """
     加密轨迹
     :param token:
-    :param distance:
+    :param trace:
     :return:
     """
     ctx = execjs.compile(js)
-    return ctx.call('encrypt', token, distance)
+    return ctx.call('encrypt', token, trace)
+
+
+def _generate_trace(distance, start_time):
+    """
+    生成轨迹
+    :param distance:
+    :param start_time:
+    :return:
+    """
+    back = random.randint(2, 6)
+    distance += back
+    # 初速度
+    v = 0
+    # 位移/轨迹列表，列表内的一个元素代表0.02s的位移
+    tracks_list = []
+    # 当前的位移
+    current = 0
+    while current < distance - 13:
+        # 加速度越小，单位时间的位移越小,模拟的轨迹就越多越详细
+        a = random.randint(10000, 12000)  # 加速运动
+        # 初速度
+        v0 = v
+        t = random.randint(9, 18)
+        s = v0 * t / 1000 + 0.5 * a * ((t / 1000) ** 2)
+        # 当前的位置
+        current += s
+        # 速度已经达到v,该速度作为下次的初速度
+        v = v0 + a * t / 1000
+        # 添加到轨迹列表
+        if current < distance:
+            tracks_list.append(round(current))
+    # 减速慢慢滑
+    if round(current) < distance:
+        for i in range(round(current) + 1, distance + 1):
+            tracks_list.append(i)
+    else:
+        for i in range(tracks_list[-1] + 1, distance + 1):
+            tracks_list.append(i)
+    # 回退
+    for _ in range(back):
+        current -= 1
+        tracks_list.append(round(current))
+    tracks_list.append(round(current) - 1)
+    if tracks_list[-1] != distance - back:
+        tracks_list.append(distance - back)
+    # 生成时间戳列表
+    timestamp_list = []
+    timestamp = int(time.time() * 1000)
+    for i in range(len(tracks_list)):
+        t = random.randint(11, 18)
+        timestamp += t
+        timestamp_list.append(timestamp)
+        i += 1
+    y_list = []
+    zy = 0
+    for j in range(len(tracks_list)):
+        y = random.choice([0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, -1, 0, 0])
+        zy += y
+        y_list.append(zy)
+        j += 1
+    trace = []
+    for index, x in enumerate(tracks_list):
+        trace.append([x, y_list[index], timestamp_list[index] - start_time])
+    return trace
 
 
 def _pic_download(url, type):
@@ -185,7 +250,7 @@ def _init_slider(slider_js, fp):
     raise Exception('未知类型验证码! ')
 
 
-def _slider_verify(slider_js, token, distance, fp):
+def _slider_verify(slider_js, token, trace, fp):
     """
     验证
     :param slider_js:
@@ -194,7 +259,7 @@ def _slider_verify(slider_js, token, distance, fp):
     :param fp:
     :return:
     """
-    data = _encrypt_data(slider_js, token, distance)
+    data = _encrypt_data(slider_js, token, trace)
     params = {
         'id': 'cff8becfc6914bf6a81d255f67a626b9',
         'token': token,
@@ -215,6 +280,7 @@ def _slider_verify(slider_js, token, distance, fp):
     check_url = 'https://c.dun.163yun.com/api/v2/check?' + urlencode(params)
     resp = requests.get(check_url, headers=headers, cookies=cookies)
     result = json.loads(resp.text.replace('__JSONP_bc4jy3y_1(', '').replace(');', ''))
+    print(result)
     if result['data']['result']:
         return {
             'success': 1,
@@ -223,7 +289,6 @@ def _slider_verify(slider_js, token, distance, fp):
                 'validate': result['data']['validate']
             }
         }
-    print(result)
     return {
         'success': 0,
         'message': '校验失败! ',
@@ -243,7 +308,10 @@ def crack():
             break
         time.sleep(1)
     distance = int(_get_distance(fg[1], bg[1]) * (306 / 320))
-    result = _slider_verify(slider_js, token, distance, fp)
+    start_time = int(time.time() * 1000)
+    time.sleep(random.uniform(0.01, 0.05))
+    trace = _generate_trace(distance, start_time)
+    result = _slider_verify(slider_js, token, trace, fp)
     return result
 
 

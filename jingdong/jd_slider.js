@@ -129,9 +129,9 @@ function getTrace(distance){
 
 
 function getParam(distance) {
-    var trace = getTrace(distance);
-    console.log(trace);
-    return jd.encrypt(trace)
+    // var trace = getTrace(distance);
+    // console.log(trace);
+    return jd.encrypt(distance)
 }
 
 console.log(getParam(225));

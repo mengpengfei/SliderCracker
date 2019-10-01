@@ -370,78 +370,8 @@ function b_sample(e, t) {
     return i
 }
 
-function RandomNum(min, max) {
-    return Math.floor(Math.random()*(max-min)) + min + 1
-}
-
-function RandomChoice(arr) {
-    return arr[Math.floor(Math.random()*arr.length)]
-}
-
-function get_trace(distance) {
-    distance = Math.floor(distance);
-    var trace = [];
-    var sy = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0];
-    var st = [15, 16, 17, 18, 15, 16, 17, 18, 15, 16, 17, 18, 15, 16, 17, 18, 15, 16, 17, 18, 15, 16, 17, 18, 15, 16, 17,
-        18, 15, 16, 17, 18, 15, 16, 17, 18, 15, 16, 17, 18, 14, 16, 17, 18, 16, 17, 18, 19, 20, 17];
-    //items[Math.floor(Math.random()*items.length)]
-
-    if (distance < 95) {
-        var sx = [1, 2, 1, 2, 1, 2, 1, 1, 2, 1];
-    }else{
-        var sx = [1, 2, 1, 2, 1, 2, 2, 2, 3, 4];
-    }
-    var zt = RandomNum(1000, 2000);
-    var zx = 0,
-        zy = 0;
-    var random_x = RandomNum(9, 14);
-    var n = 0, x = 0, y = 0, t = 0;
-    while (true){
-        n += 1;
-        if (n < 5){
-            x = 1;
-        }else{
-            x = RandomChoice(sx)
-        }
-        if (distance > 125 && random_x === n){
-            x = RandomNum(14, 18)
-        }
-        y = RandomChoice(sy);
-        t = RandomChoice(st);
-        zx += x;
-        zy += y;
-        zt += t;
-        trace.push([zx, zy, zt]);
-        if (distance - zx < 6){
-            break;
-        }
-    }
-    var value = distance - zx;
-    for (var i = 0; i < value; i++){
-        t = RandomChoice(st);
-
-        if (value === i + 1){
-            t = RandomNum(42, 56)
-        }
-        if (value === i + 2){
-            t = RandomNum(32, 38)
-        }
-        if (value === i + 3){
-            t = RandomNum(30, 36)
-        }
-        x = 1;
-        zx += x;
-        zt += t;
-        trace.push([zx, zy, zt]);
-    }
-	return trace;
-}
-
-function process_trace(token, distance) {
-    var new_trace = new Array(),
-      trace = get_trace(distance);
-    console.log(trace);
+function process_trace(token, trace) {
+    var new_trace = new Array();
     for (var i_index = 0 ;i_index < trace.length; i_index++) {
         var xx = t.xor_encode(token, trace[i_index] + "");
         new_trace.push(xx)
@@ -449,22 +379,22 @@ function process_trace(token, distance) {
     return new_trace
 }
 
-function encrypt(token, distance) {
-    var trace = process_trace(token, distance),
-      n_ = b_sample(trace, 50),
-      r_ = t.eypt(t.xor_encode(token, parseInt(distance + "px", 10) / 306 * 100 + ""));
+function encrypt(token, trace) {
+    var new_trace = process_trace(token, trace),
+      n_ = b_sample(new_trace, 50),
+      r_ = t.eypt(t.xor_encode(token, parseInt(trace[trace.length - 1][0] - trace[0][0] + "px", 10) / 306 * 100 + ""));
     return {
         d: t.eypt(n_.join(":")),
         m: "",
         p: r_,
-        ext: t.eypt(t.xor_encode(token, 1 + "," + trace.length))
+        ext: t.eypt(t.xor_encode(token, 1 + "," + new_trace.length))
     }
 }
 
 
-console.log(process_trace("8df1e4d682d94d14a4b62a6dda9be30f", 76));
+console.log(process_trace("8df1e4d682d94d14a4b62a6dda9be30f", [[1, 0, 36], [5, 0, 53], [12, 0, 64], [21, 0, 81], [33, 0, 95], [45, 0, 106], [61, 0, 117], [79, 0, 135], [104, 1, 148], [118, 0, 162], [138, 0, 176], [169, 1, 190], [201, 0, 206], [202, 0, 221], [203, 0, 235], [204, 0, 249], [205, 0, 264], [206, 0, 282], [207, 2, 297], [208, 0, 309], [209, 0, 326], [210, 0, 344], [211, 0, 355], [212, 0, 369], [213, 0, 384], [214, 0, 402], [215, 2, 417], [216, 0, 435], [217, 0, 447], [218, 0, 462], [219, 0, 479], [220, 0, 495], [221, 0, 512], [222, 0, 530], [223, 0, 546], [224, 0, 559], [225, 0, 572], [226, 0, 586], [227, 0, 603], [228, 0, 616], [229, 0, 634], [230, 0, 650], [231, 0, 665], [232, 0, 680]],));
 console.log(encrypt(
     "8df1e4d682d94d14a4b62a6dda9be30f",
-    56,
+    [[1, 0, 36], [5, 0, 53], [12, 0, 64], [21, 0, 81], [33, 0, 95], [45, 0, 106], [61, 0, 117], [79, 0, 135], [104, 1, 148], [118, 0, 162], [138, 0, 176], [169, 1, 190], [201, 0, 206], [202, 0, 221], [203, 0, 235], [204, 0, 249], [205, 0, 264], [206, 0, 282], [207, 2, 297], [208, 0, 309], [209, 0, 326], [210, 0, 344], [211, 0, 355], [212, 0, 369], [213, 0, 384], [214, 0, 402], [215, 2, 417], [216, 0, 435], [217, 0, 447], [218, 0, 462], [219, 0, 479], [220, 0, 495], [221, 0, 512], [222, 0, 530], [223, 0, 546], [224, 0, 559], [225, 0, 572], [226, 0, 586], [227, 0, 603], [228, 0, 616], [229, 0, 634], [230, 0, 650], [231, 0, 665], [232, 0, 680]],
 ));
 console.log(get_cb());

@@ -19,6 +19,9 @@
 * 美团
 ![image](https://github.com/Esbiya/SliderCracker/blob/master/view/meituan.png)
 
+* 易盾
+![image](https://github.com/Esbiya/SliderCracker/blob/master/view/yidun.png)
+
 * 云片
 ![image](https://github.com/Esbiya/SliderCracker/blob/master/view/yunpian.png)
 

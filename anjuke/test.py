@@ -17,13 +17,13 @@ headers = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
     'accept-encoding': 'gzip, deflate, br',
     'accept-language': 'zh-CN,zh;q=0.9',
-    'referer': 'https://www.anjuke.com/captcha-verify/',
+    'referer': 'https://shanghai.anjuke.com/',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'
 }
 
 
 def get_sessionid():
-    url = 'https://www.anjuke.com/captcha-verify/?callback=shield&from=antispam&serialID=f51e8ecae16400c96feb87fba1cddc37_2a8c6e02a1044e3bb0e223a55f029d42&history=aHR0cHM6Ly9jcy5hbmp1a2UuY29tLw%3D%3D'
+    url = 'https://www.anjuke.com/captcha-verify/?callback=shield&from=antispam'
     resp = requests.get(url, headers=headers)
     bsobj = BeautifulSoup(resp.text, 'lxml')
     session_id = bsobj.select('#sessionId')[0]['value']
@@ -31,7 +31,7 @@ def get_sessionid():
 
 
 def get_captcha(session_id):
-    url = 'https://verifycode.58.com/captcha/getV3?'
+    url = 'https://verifycode.58.com/captcha/getV3'
     params = {
         'callback': '',
         'showType': 'embed',

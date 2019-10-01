@@ -139,8 +139,14 @@ def verify(response_id, session_id, data):
 
 
 def crack(captcha_url, session_id, response_id):
+    """
+    验证
+    :param captcha_url:
+    :param session_id:
+    :param response_id:
+    :return:
+    """
     distance = get_distance(captcha_url)
-    print(distance)
     token = get_token()
     distance, track = get_track(distance)
     if not track:
