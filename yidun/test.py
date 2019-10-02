@@ -20,6 +20,7 @@ def main():
         if x['success']:
             success += 1
         time.sleep(5)
+        num += 1
     print('最后测试结果 >> %.2f%%' % success)
 
 

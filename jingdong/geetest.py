@@ -64,6 +64,14 @@ def get_distance(small_url, big_url):
 
 
 def get_trace(distance):
+    """
+    生成轨迹
+    :param distance:
+    :return:
+    """
+    back = random.randint(2, 6)
+    distance += back
+
     base_x = 851
     base_y = 342
     # 初速度
@@ -93,23 +101,32 @@ def get_trace(distance):
     else:
         for i in range(tracks_list[-1] + 1, distance + 1):
             tracks_list.append(i)
-    print(tracks_list[-1] - tracks_list[0])
+    # 回退
+    for _ in range(back):
+        current -= 1
+        tracks_list.append(round(current))
+    tracks_list.append(round(current) - 1)
+    if tracks_list[-1] != distance - back:
+        tracks_list.append(distance - back)
     # 生成时间戳列表
-    timestamp_list = []
     timestamp = int(time.time() * 1000)
-    for i in range(len(tracks_list)):
+    timestamp_list = [timestamp]
+    time.sleep(random.uniform(0.5, 1.5))
+    for i in range(1, len(tracks_list)):
         t = random.randint(11, 18)
         timestamp += t
         timestamp_list.append(timestamp)
         i += 1
     y_list = []
     for j in range(len(tracks_list)):
-        y = random.choice([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0])
+        y = random.choice([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0])
         y_list.append(y)
         j += 1
-    trace = []
+    trace = [[str(base_x), str(base_y), timestamp_list[0]]]
+    x_offset = random.randint(20, 40)
+    y_offset = random.randint(20, 40)
     for index, x in enumerate(tracks_list):
-        trace.append([str(base_x + x), str(base_y + y_list[index]), timestamp_list[index]])
+        trace.append([str(base_x + x_offset + x), str(base_y + y_offset + y_list[index]), timestamp_list[index]])
     return trace
 
 
@@ -136,7 +153,7 @@ class JDCracker:
         return init_data
 
     @staticmethod
-    def _encrypt_trace(distance):
+    def _encrypt_trace(trace):
         """
         加密轨迹, 生成参数 d
         :return:
@@ -145,7 +162,7 @@ class JDCracker:
             js = f.read()
 
         ctx = execjs.compile(js)
-        return ctx.call('getParam', distance)
+        return ctx.call('encrypt_trace', trace)
 
     def get_session_id(self):
         """
@@ -164,15 +181,12 @@ class JDCracker:
         bg = init_data['bg']
         small = init_data['patch']
         distance = int(get_distance(small, bg) * (278 / 360))
-        print(distance)
 
         if not distance:
             print("缺口定位失败")
             return
 
         _jdtdmap_sessionId = self.get_session_id()
-
-        time.sleep(random.random())  # 非常关键
 
         trace = get_trace(distance)
         d = self._encrypt_trace(trace)
