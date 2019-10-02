@@ -195,7 +195,7 @@ def _init_slider(ctx):
         fg = result['data']['front']
         token = result['data']['token']
         return {
-            'captcha_url':bg,
+            'captcha_url': bg,
             'slider_url': fg,
             'token': token
         }
