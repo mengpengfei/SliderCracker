@@ -99,25 +99,15 @@ def _get_distance(captcha_url):
     img_path = _pic_download(captcha_url, 'captcha')
     img1 = cv2.imread(img_path, 0)
     img2 = cv2.imread("slider.jpg", 0)
-    # ret2, th2 = cv2.threshold(img1, 160, 255, cv2.THRESH_BINARY)
-    # cv2.imwrite("bg_th.png", th2)
-    # img = cv2.imread("bg_th.png", 0)
     res = cv2.matchTemplate(img1, img2, cv2.TM_CCOEFF_NORMED)
-    # print(res)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-    # w, h = img2.shape[::-1]
     loc = np.where(res >= 0.6)
     for pt in zip(*loc[::-1]):
-        # cv2.rectangle(img1, pt, (pt[0] + w, pt[1] + h), (7, 249, 151), 2)
         p = pt
-    # print("----", p)
-    # p = min_loc
-    # print(p)
     try:
         cv2.imshow('Detected', img1[p[1]:, p[0]:])
         cv2.waitKey(3000)
     except Exception as e:
-        print(e)
+        print(e.args)
         return None
     res = cv2.resize(img1, (255, int(300 * (255 / 600))), interpolation=cv2.INTER_CUBIC)
     cv2.imshow("res", res[:, int(p[0] * (255 / 600) + 15):])
