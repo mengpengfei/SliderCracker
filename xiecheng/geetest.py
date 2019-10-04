@@ -24,7 +24,6 @@ import hashlib
 
 headers = {
     'Referer': 'https://passport.ctrip.com/user/login?BackUrl=https%3A%2F%2Fwww.ctrip.com%2F%3Fsid%3D153507%26allianceid%3D5376%26ouid%3Dtitle',
-    # 'Cookie': '_abtest_userid=90b85f68-2870-4bb8-860e-1f56c563199a; _bfa=1.1570083851567.3nr93j.1.1570083851567.1570083851567.1.2; _bfs=1.2; gad_city=14dae9923e6ebde325500992d91b82ab; _RF1=223.152.39.68; _RSG=k748kI8zBvFzFoPSTemAD9; _RDG=28910b41515ae52bcb033622304580edda; _RGUID=fe4bf484-ae20-41ee-934a-c2875c6723fd; _bfi=p1%3D10320670296%26p2%3D0%26v1%3D2%26v2%3D0',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.80 Safari/537.36'
 }
 
