@@ -7,6 +7,7 @@
 * 易盾(轨迹算法通过率较低, 可自行改写)
 * 云片(验证码图像处理缺口定位成功率有待提高)
 * 数美(说明: 当接口返回数据中 riskLevel 字段为 PASS 即为验证通过, 在之后的请求中携带 rid 即可)
+* 携程(只实现了滑块验证部分, 通过率极高, 控制频率不会出现后续点选验证)
 
 结果展示
 --------
@@ -28,6 +29,10 @@
 
 * 数美
 ![image](https://github.com/Esbiya/SliderCracker/blob/master/view/shumei.png)
+
+* 携程
+![image](https://github.com/Esbiya/SliderCracker/blob/master/view/xiecheng.png)
+
 
 公告
 --------

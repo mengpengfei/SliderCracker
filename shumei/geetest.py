@@ -57,8 +57,11 @@ def _encrypt_trace(k, trace, distance):
     :param distance: 距离
     :return:
     """
+    # 对 k 值进行 base64 解码
     text = base64.b64decode(k)
+    # 对解码后的 k 值进行 DES 解密（密钥: sshummei）, 取前8位作为下一次加密的密钥
     new_key = decrypt('sshummei', text)[:8]
+    # 构造待加密数据
     data = {
         # 滑动距离 / 300
         "d": distance / 300,
@@ -66,13 +69,18 @@ def _encrypt_trace(k, trace, distance):
         "m": trace,
         # 滑动所用时间
         "c": trace[-1][-1],
+        # 验证码图片尺寸, 宽
         "w": 300,
+        # 验证码图片尺寸, 高
         'h': 150,
+        # 设备
         'os': 'web_pc',
+        # 是否 webdriver
         "cs": 0,
         "wd": 0,
         'sm': -1
     }
+    # 最后加密 DES
     return encrypt(new_key, json.dumps(data).replace(' ', '')).decode()
 
 
