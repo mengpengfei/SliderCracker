@@ -31,8 +31,8 @@ headers = {
 # 接口通用参数
 params = {
     'callback': 'captcha029311869916299216',
-    # 滑块使用接口标识, 如登录时需要滑块验证, 则为: crm_login_online, 手机号查询订单: crm_getorder_online, 按自己需求替换
     'appid': '100008493',
+    # 滑块使用接口标识, 如登录时需要滑块验证, 则为: crm_login_online, 手机号查询订单: crm_getorder_online, 按自己需求替换
     'business_site': 'crm_sms_online',
     'version': '2.5.31'
 }
