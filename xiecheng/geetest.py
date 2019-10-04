@@ -52,7 +52,7 @@ def _generate_trace():
     # 当前的位移
     current = 0
     while current < distance - 13:
-        # 加速度越小，单位时间的位移越小,模拟的轨迹就越多越详细
+        # 加速度越小, 单位时间的位移越小, 模拟的轨迹就越多越详细
         a = random.randint(10000, 12000)  # 加速运动
         # 初速度
         v0 = v
@@ -60,7 +60,7 @@ def _generate_trace():
         s = v0 * t / 1000 + 0.5 * a * ((t / 1000) ** 2)
         # 当前的位置
         current += s
-        # 速度已经达到v,该速度作为下次的初速度
+        # 速度已经达到v, 该速度作为下次的初速度
         v = v0 + a * t / 1000
         # 添加到轨迹列表
         if current < distance:

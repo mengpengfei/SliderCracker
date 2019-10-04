@@ -1747,7 +1747,7 @@ var JSEncryptRSAKey = function (_super) {
 window.JSEncrypt = JSEncrypt;
 
 function encrypt_trace(trace) {
-    var x = 'passport' + JSON.stringify(trace);
+    var x = 'passport' + trace;
     var public_key = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCj+WG/EdwJXcaINIlSyrHjeLmZsk7C9NnkqzrOJ2uYG7M2QSaLVygtlftSDQ8ccC3KsYaS9gnVPlWggJf9h49tDW/vCnlnYehcLwVDtmSGHON/wyZfmLgARbjHxcmxEifmLJAKf+Vg3zqwk05jRa9occxTY3HsPjVYdQWL83DTiQIDAQAB';
     window.JSEncrypt.prototype.setPublicKey(public_key);
     return window.JSEncrypt.prototype.encryptLong(x)
