@@ -141,13 +141,13 @@ def _get_distance(slider_url, captcha_url):
     # 调用PIL Image 做测试
     image = Image.open(captcha_path)
 
-    xy = (y + 5, x + 8, y + w - 3, x + h - 3)
+    xy = (y, x, y + w, x + h)
     # 切割
     imagecrop = image.crop(xy)
     # 保存切割的缺口
     imagecrop.convert('RGB').save("new_image.jpg")
     imagecrop.show()
-    return int(y + 5)
+    return int(y)
 
 
 def _generate_trace(distance):
