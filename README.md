@@ -9,6 +9,7 @@
 * 数美(说明: 当接口返回数据中 riskLevel 字段为 PASS 即为验证通过, 在之后的请求中携带 rid 即可)
 * 携程(只实现了滑块验证部分, 通过率极高, 控制频率不会出现后续点选验证)
 * 搜狐
+* 虎牙(滑块通过后台未返回通过认证参数, 后续请求直接使用滑块标识ID code 作为 ticket 即可)
 
 
 结果展示
@@ -38,6 +39,8 @@
 * 搜狐
 ![image](https://github.com/Esbiya/SliderCracker/blob/master/view/souhu.png)
 
+* 虎牙
+![image](https://github.com/Esbiya/SliderCracker/blob/master/view/huya.png)
 
 公告
 --------
