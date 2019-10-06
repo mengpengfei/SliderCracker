@@ -6,9 +6,18 @@
 # @Software: PyCharm
 
 """
-说明：虎牙滑块验证通过后
+虎牙滑块验证通过后返回 json 数据样式:
+{
+    'uri': 1,
+    'version': None,
+    'context': None,
+    'requestId': 0,
+    'returnCode': 0,
+    'message': None,
+    'description': None,
+    'data': {'code': 0}  // code 为 0 时通过, -1 时未通过
+}
 """
-
 
 import numpy as np
 import requests
@@ -20,7 +29,6 @@ import cv2
 import base64
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
-
 
 headers = {
     'Content-Type': 'application/json',
@@ -232,7 +240,7 @@ def crack():
     # 加密表单
     data = {
         'point': distance / 386 * 780,
-        'travel':  trace,
+        'travel': trace,
         'code': init_data['code'],
         'endTime': pass_time
     }
