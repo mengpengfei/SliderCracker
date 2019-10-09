@@ -61,6 +61,9 @@ class IqiyiSliderCracker:
         if result['code'] == 'P00223':
             print('出现滑块: {}'.format(result))
             return result['data']['data']['token']
+        elif result['code'] == 'P00159':
+            print('未出现滑块: {}'.format(result))
+            return None
         print('滑块验证通过: {}'.format(result))
         return None
 
@@ -194,6 +197,12 @@ class IqiyiSliderCracker:
         """
         # 登录触发滑块, 注意要使用过期的 dfp 参数,
         token = self.login()
+        if not token:
+            return {
+                'success': 0,
+                'message': '该 dfp 参数已过期, 请更换未过期并且可疑的 dfp 参数, 以便触发滑块验证! ',
+                'data': None
+            }
         key_data = self._init_key()
         aes_key = iqiyi_crypt.generate_aeskey(self.i, self.r, key_data['sr'])
         hmac_key = iqiyi_crypt.generate_hmackey(self.i, self.r, key_data['sr'])
@@ -219,4 +228,5 @@ class IqiyiSliderCracker:
 
 
 if __name__ == '__main__':
-    pass
+    x = IqiyiSliderCracker('a1835676114a1946afb9b57417746ac8cc1ae2ca2e797a88078f7be3ba64f4db31').crack()
+    print(x)

@@ -16,5 +16,6 @@ def main(dfp):
 
 
 if __name__ == '__main__':
-    dfp = 'a14276d7cc6c11427090d0b9dd4f48657a8b0e9d57769b1809e310381e1ce1fada'
+    # 这个参数已过期, 请自行更换, 登录爱奇艺直至出现滑块, 从出现滑块的登录接口 login.action 中取 Form Data 参数 dfp
+    dfp = 'a1835676114a1946afb9b57417746ac8cc1ae2ca2e797a88078f7be3ba64f4db31'
     main(dfp)
