@@ -195,7 +195,7 @@ class IqiyiSliderCracker:
         整个破解流程
         :return:
         """
-        # 登录触发滑块, 注意要使用过期的 dfp 参数,
+        # 登录触发滑块, 注意要使用未过期且可疑的 dfp 参数,
         token = self.login()
         if not token:
             return {
@@ -203,14 +203,24 @@ class IqiyiSliderCracker:
                 'message': '该 dfp 参数已过期, 请更换未过期并且可疑的 dfp 参数, 以便触发滑块验证! ',
                 'data': None
             }
+        # 初始化密钥, 明文传输 i、加密传输 r 这两个参数给服务器, 服务器会返回给你一个 sr 和 sid
+        # 其中 i, r, sr 用来生成 AES 和 hMac 密钥, sid 用来给服务器识别你之后传输的加密数据是哪个密钥加密的, 方便服务器解密
         key_data = self._init_key()
+        # 生成 AES 密钥
         aes_key = iqiyi_crypt.generate_aeskey(self.i, self.r, key_data['sr'])
+        # 生成 hMac 哈希密钥
         hmac_key = iqiyi_crypt.generate_hmackey(self.i, self.r, key_data['sr'])
+        # 用和服务器约定好的密钥进行 AES 对称加密, 初始化滑块
         init_data = self._init_slider(token, aes_key, hmac_key, key_data['sid'])
+        # 模拟滑动轨迹
         start_time = int(time.time() * 1000)
+        # 停顿0.1~0.5 s, 模拟人为反应
         time.sleep(random.uniform(0.1, 0.5))
+        # js 还原乱序图片, 并用 cv2 的 matchTemplate 方法识别缺口距离
         distance = get_distance(init_data)
+        # 构造滑动轨迹 post 表单
         verify_data = self.format_verify_data(token, distance, start_time, init_data['iconYOffset'])
+        # 最终验证
         result = self._slider_verify(verify_data, aes_key, hmac_key, key_data['sid'])
         if result['code'] == "A00000":
             return {
